@@ -8,19 +8,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * A class to query Windows' Registry.
+ */
 public final class WindowsRegistry {
 
-    public static List<QueryResult> queryValuesRecursively(HKey hKey, String key) {
+    public static List<QueryResult> query(HKey hKey, String key, QueryParameter... parameters) {
         try {
-            return buildAndParseQuery(hKey, key);
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException("Unable to query values recursively", e);
-        }
-    }
-
-    public static List<QueryResult> queryValuesRecursively(HKey hKey, String key, HRegistryValueType valueType) {
-        try {
-            return buildAndParseQuery(hKey, key, QueryParameter.recursive(), QueryParameter.valueFilter(valueType));
+            return buildAndParseQuery(hKey, key, parameters);
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("Unable to query values recursively", e);
         }
@@ -49,7 +44,6 @@ public final class WindowsRegistry {
         key = normalizeKey(key);
 
         String compiledParameters = Arrays.stream(parameters).map(Object::toString).collect(Collectors.joining(" "));
-
         String query = String.format("reg query \"%s\\%s\" %s", hKey.getAbbreviation(), key, compiledParameters);
 
         Process process = Runtime.getRuntime().exec(query);

@@ -6,10 +6,10 @@ public class QueryResult {
 
     static QueryResult parse(HKey hKey, String key, String[] split) {
         if (key == null) {
-            throw new IllegalArgumentException(String.format("Unable to parse QueryResult: {%s}", Arrays.toString(split)));
+            throw new IllegalArgumentException(String.format("Unable to parse QueryResult with a null key: {%s}", Arrays.toString(split)));
         }
         if (split.length != 4) {
-            throw new IllegalArgumentException(String.format("Unable to parse QueryResult: {%s}", Arrays.toString(split)));
+            throw new IllegalArgumentException(String.format("Unable to parse QueryResult from: {%s}", Arrays.toString(split)));
         }
         return new QueryResult(hKey, key, split[1], HRegistryValueType.valueOf(split[2]), split[3]);
     }
