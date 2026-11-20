@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2025-2026 CleanroomMC contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 package com.cleanroommc.platformutils;
 
 public enum OperatingSystem {

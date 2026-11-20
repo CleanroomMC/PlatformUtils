@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2025-2026 CleanroomMC contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 package com.cleanroommc.platformutils.windows;
 
 import java.io.BufferedReader;
@@ -14,14 +19,16 @@ import java.util.stream.Collectors;
  */
 public final class WindowsRegistry {
 
-    public static QueryResult query(HKey hKey, String key, QueryParameter... parameters) {
-        return buildAndParseQuery(hKey, key, parameters);
+    private WindowsRegistry() { }
+
+    public static QueryResult query(HKey hkey, String key, QueryParameter... parameters) {
+        return buildAndParseQuery(hkey, key, parameters);
     }
 
-    private static QueryResult buildAndParseQuery(HKey hKey, String key, QueryParameter... parameters) {
+    private static QueryResult buildAndParseQuery(HKey hkey, String key, QueryParameter... parameters) {
         List<String> results;
         try {
-            results = buildQuery(hKey, key, parameters);
+            results = buildQuery(hkey, key, parameters);
         } catch (IOException e) {
             return QueryResult.error(e.getMessage());
         } catch (InterruptedException e) {
@@ -41,21 +48,22 @@ public final class WindowsRegistry {
                 continue;
             }
             String firstSplit = split[0];
-            if (firstSplit.startsWith(hKey.toString())) {
+            if (firstSplit.startsWith(hkey.toString())) {
                 currentKey = split[0].substring(split[0].indexOf('\\') + 1);
             } else if (firstSplit.isEmpty() && split.length == 4) {
-                entries.add(QueryResult.parse(hKey, currentKey, split));
+                entries.add(QueryResult.parse(hkey, currentKey, split));
             }
         }
 
         return QueryResult.success(entries);
     }
 
-    private static List<String> buildQuery(HKey hKey, String key, QueryParameter... parameters) throws IOException, InterruptedException {
+    private static List<String> buildQuery(HKey hkey, String key, QueryParameter... parameters) throws IOException,
+            InterruptedException {
         key = normalizeKey(key);
 
         String compiledParameters = Arrays.stream(parameters).map(Object::toString).collect(Collectors.joining(" "));
-        String query = String.format("reg query \"%s\\%s\" %s", hKey.getAbbreviation(), key, compiledParameters);
+        String query = String.format("reg query \"%s\\%s\" %s", hkey.getAbbreviation(), key, compiledParameters);
 
         Process process = Runtime.getRuntime().exec(query);
         BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -80,7 +88,5 @@ public final class WindowsRegistry {
     private static String normalizeKey(String key) {
         return key.replace("/", "\\");
     }
-
-    private WindowsRegistry() { }
 
 }

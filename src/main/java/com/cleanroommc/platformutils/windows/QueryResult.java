@@ -1,27 +1,14 @@
+/*
+ * Copyright (c) 2025-2026 CleanroomMC contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 package com.cleanroommc.platformutils.windows;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-public class QueryResult {
-
-    static QueryResult.Entry parse(HKey hKey, String key, String[] split) {
-        if (key == null) {
-            throw new IllegalArgumentException(String.format("Unable to parse QueryResult with a null key: {%s}", Arrays.toString(split)));
-        }
-        if (split.length != 4) {
-            throw new IllegalArgumentException(String.format("Unable to parse QueryResult from: {%s}", Arrays.toString(split)));
-        }
-        return new QueryResult.Entry(hKey, key, split[1], HRegistryValueType.valueOf(split[2]), split[3]);
-    }
-
-    static QueryResult success(Collection<QueryResult.Entry> entries) {
-        return new QueryResult(entries);
-    }
-
-    static QueryResult error(String message) {
-        return new QueryResult(message);
-    }
+public final class QueryResult {
 
     private final Collection<QueryResult.Entry> entries;
     private final String message;
@@ -36,6 +23,26 @@ public class QueryResult {
         this.message = message;
     }
 
+    static QueryResult.Entry parse(HKey hkey, String key, String[] split) {
+        if (key == null) {
+            throw new IllegalArgumentException(String.format("Unable to parse QueryResult with a null key: {%s}",
+                    Arrays.toString(split)));
+        }
+        if (split.length != 4) {
+            throw new IllegalArgumentException(String.format("Unable to parse QueryResult from: {%s}",
+                    Arrays.toString(split)));
+        }
+        return new QueryResult.Entry(hkey, key, split[1], HRegistryValueType.valueOf(split[2]), split[3]);
+    }
+
+    static QueryResult success(Collection<QueryResult.Entry> entries) {
+        return new QueryResult(entries);
+    }
+
+    static QueryResult error(String message) {
+        return new QueryResult(message);
+    }
+
     public boolean successful() {
         return this.entries != null;
     }
@@ -48,14 +55,16 @@ public class QueryResult {
         return this.entries;
     }
 
-    public static class Entry {
+    public static final class Entry {
 
-        private final HKey hKey;
-        private final String key, valueKey, valueString;
+        private final HKey hkey;
+        private final String key;
+        private final String valueKey;
+        private final String valueString;
         private final HRegistryValueType valueType;
 
-        private Entry(HKey hKey, String key, String valueKey, HRegistryValueType valueType, String valueString) {
-            this.hKey = hKey;
+        private Entry(HKey hkey, String key, String valueKey, HRegistryValueType valueType, String valueString) {
+            this.hkey = hkey;
             this.key = key;
             this.valueKey = valueKey;
             this.valueType = valueType;
@@ -63,7 +72,7 @@ public class QueryResult {
         }
 
         public HKey hKey() {
-            return hKey;
+            return hkey;
         }
 
         public String key() {
@@ -84,16 +93,10 @@ public class QueryResult {
 
         @Override
         public String toString() {
-            return "QueryResult$Entry{" +
-                    "hKey=" + hKey +
-                    ", key='" + key + '\'' +
-                    ", valueKey='" + valueKey + '\'' +
-                    ", valueString='" + valueString + '\'' +
-                    ", valueType=" + valueType +
-                    '}';
+            return "QueryResult$Entry{" + "hKey=" + hkey + ", key='" + key + '\'' + ", valueKey='" + valueKey + '\''
+                    + ", valueString='" + valueString + '\'' + ", valueType=" + valueType + '}';
         }
 
     }
-
 
 }

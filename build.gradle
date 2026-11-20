@@ -1,45 +1,18 @@
 plugins {
     id 'java'
-    id 'maven-publish'
+    id 'com.cleanroommc.conventions'
 }
 
-group = 'com.cleanroommc'
-version = '2.0.0'
 base.archivesName = 'platform-utils'
 
-java {
-    toolchain {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-        languageVersion = JavaLanguageVersion.of(8)
-    }
-    withSourcesJar()
-}
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-}
-
-test {
-    useJUnitPlatform()
+conventions {
+    beginFrom = 2025
 }
 
 publishing {
-    repositories {
-        maven {
-            name 'CleanroomMaven'
-            url 'https://repo.cleanroommc.com/releases'
-            credentials(PasswordCredentials)
-        }
-    }
     publications {
-        mavenJava(MavenPublication) {
-            artifactId 'platform-utils'
+        maven(MavenPublication) {
+            artifactId = 'platform-utils'
             from components.java
         }
     }

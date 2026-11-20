@@ -1,9 +1,29 @@
+/*
+ * Copyright (c) 2025-2026 CleanroomMC contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 package com.cleanroommc.platformutils.windows;
 
 /**
- * <a href="https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/reg-query">reg query documentation</a>
+ * Parameters for {@code reg query}.
+ *
+ * @see <a href="https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/reg-query">reg query documentation</a>
  */
 public final class QueryParameter {
+
+    private final String parameter;
+    private final String parameterArgument;
+
+    private QueryParameter(String parameter) {
+        this.parameter = parameter;
+        this.parameterArgument = null;
+    }
+
+    private QueryParameter(String parameter, String parameterArgument) {
+        this.parameter = parameter;
+        this.parameterArgument = parameterArgument;
+    }
 
     public static QueryParameter valueName(String valueName) {
         return new QueryParameter("/v", valueName);
@@ -47,19 +67,6 @@ public final class QueryParameter {
 
     public static QueryParameter valueFilter(HRegistryValueType valueType) {
         return new QueryParameter("/t", valueType.toString());
-    }
-
-    private final String parameter;
-    private final String parameterArgument;
-
-    private QueryParameter(String parameter) {
-        this.parameter = parameter;
-        this.parameterArgument = null;
-    }
-
-    private QueryParameter(String parameter, String parameterArgument) {
-        this.parameter = parameter;
-        this.parameterArgument = parameterArgument;
     }
 
     @Override

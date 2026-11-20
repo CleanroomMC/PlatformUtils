@@ -1,12 +1,13 @@
+/*
+ * Copyright (c) 2025-2026 CleanroomMC contributors
+ * SPDX-License-Identifier: MIT
+ */
+
 package com.cleanroommc.platformutils;
 
 public final class Platform {
 
     private static final Platform CURRENT = new Platform();
-
-    public static Platform current() {
-        return CURRENT;
-    }
 
     private final OperatingSystem operatingSystem;
     private final Architecture architecture;
@@ -14,6 +15,10 @@ public final class Platform {
     private Platform() {
         this.operatingSystem = OperatingSystem.CURRENT;
         this.architecture = Architecture.CURRENT;
+    }
+
+    public static Platform current() {
+        return CURRENT;
     }
 
     public OperatingSystem operatingSystem() {
@@ -45,5 +50,3 @@ public final class Platform {
     }
 
 }
-
-
