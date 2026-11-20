@@ -69,18 +69,22 @@ public final class WindowsRegistry {
         BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
         BufferedReader err = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
-        process.waitFor();
+        // Drain the output before waiting, as reg blocks once the pipe fills. reg only writes a short line to stderr,
+        // so reading it second can't fill its pipe.
 
         List<String> result = new ArrayList<>();
+        List<String> errors = new ArrayList<>();
         String str;
-        while ((str = err.readLine()) != null) {
-            result.add(str);
-        }
-        if (!result.isEmpty()) {
-            throw new IOException(String.join("\n", result));
-        }
         while ((str = in.readLine()) != null) {
             result.add(str);
+        }
+        while ((str = err.readLine()) != null) {
+            errors.add(str);
+        }
+        process.waitFor();
+
+        if (!errors.isEmpty()) {
+            throw new IOException(String.join("\n", errors));
         }
         return result;
     }
